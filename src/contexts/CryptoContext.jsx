@@ -1,29 +1,56 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  useCallback,
+} from "react";
 import axios from "axios";
 
 const CryptoContext = createContext();
 
 const CryptoProvider = ({ children }) => {
-  // const [cryptoName, setCryptoName] = useState("");
+  const [coinName, setCoinName] = useState("");
   const [cryptoList, setCryptoList] = useState([]);
-  useEffect(() => {
-    getAllCoins();
-  }, []);
+  const [page, setPage] = useState(1);
 
-  const searchByName = async (crypto) => {
-    const searchedCoin = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${crypto}`
-    );
-    return searchedCoin.data;
-  };
-  const getAllCoins = async () => {
+  const getAllCoins = useCallback(async () => {
     const response = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd`
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=${page}`
     );
     return setCryptoList(response.data);
-  };
+  }, [page]);
 
-  const values = { cryptoList, searchByName };
+  useEffect(() => {
+    getAllCoins();
+  }, [getAllCoins]);
+
+  const filterInCoins = useCallback(
+    (coinName) => {
+      if (coinName.trim() === "") {
+        getAllCoins();
+      } else {
+        const newList = cryptoList.filter((coin) => {
+          return coin.name.toLowerCase().indexOf(coinName.toLowerCase()) !== -1;
+        });
+        return setCryptoList(newList);
+      }
+    },
+    [cryptoList, getAllCoins]
+  );
+  useEffect(() => {
+    filterInCoins(coinName);
+  }, [filterInCoins, coinName]);
+
+  const values = {
+    cryptoList,
+    coinName,
+    setCoinName,
+    getAllCoins,
+    filterInCoins,
+    page,
+    setPage,
+  };
 
   return (
     <CryptoContext.Provider value={values}>{children}</CryptoContext.Provider>

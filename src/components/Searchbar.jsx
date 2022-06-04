@@ -1,12 +1,25 @@
-import React from "react";
 import { Form, InputGroup } from "react-bootstrap";
+import { useCrypto } from "../contexts/CryptoContext";
 function Searchbar() {
+  const {
+    coinName,
+    setCoinName,
+
+    filterInCoins,
+  } = useCrypto();
+
+  const handleNameChange = (e) => {
+    setCoinName(e.target.value);
+    filterInCoins(coinName);
+  };
+
   return (
-    <div className="w-25">
-      <InputGroup size="sm" className="mb-3">
+    <div className="w-25 d-flex">
+      <InputGroup size="md" className="mb-3">
         <Form.Control
-          aria-describedby="inputGroup-sizing-sm"
-          placeholder="Search by crypto name"
+          value={coinName}
+          onChange={handleNameChange}
+          placeholder="Search coin by name"
         />
       </InputGroup>
     </div>

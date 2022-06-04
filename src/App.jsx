@@ -1,12 +1,18 @@
 import "./App.css";
 import Searchbar from "./components/Searchbar";
 import CryptoList from "./components/CryptoList";
+import Header from "./components/Header";
+import PageChanger from "./components/PageChanger";
+import Footer from "./components/Footer";
 import { CryptoProvider } from "./contexts/CryptoContext";
 function App() {
   const container = (
     <CryptoProvider>
+      <Header />
       <Searchbar />
       <CryptoList />
+      <PageChanger />
+      <Footer />
     </CryptoProvider>
   );
   return (

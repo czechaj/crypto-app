@@ -5,7 +5,7 @@ import CryptoCard from "./CryptoCard";
 
 function CryptoList() {
   const { cryptoList } = useCrypto();
-  console.log(cryptoList);
+  // console.log(cryptoList);
   return (
     <div className="w-75">
       <ListGroup as="ul">
